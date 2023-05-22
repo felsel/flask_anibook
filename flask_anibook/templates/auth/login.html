@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{% block belowP %}
+<form action="/auth/login" method="post">
+  <label for="username" class="formLabel">Username: </label>
+  <input type="text" name="username">
+  <label for="password" class="formLabel">Password: </label>
+  <input type="password" name="password">
+  <label for="remember" class="formLabel">Stay Connected: </label>
+  <input type="checkbox" name="remember" value="True">
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}

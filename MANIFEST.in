@@ -1,0 +1,4 @@
+include some-config.toml
+graft flask_anikbook/static
+graft flask_anikbook/templates
+global-exclude *.pyc

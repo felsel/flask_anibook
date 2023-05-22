@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{{ url_for('static', filename='reset.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet" />
+</head>
+
+<body>
+  <h2 class="testBase">Hello</h2>
+  <header class="header-bar">
+    <div class="header-bar-right">
+      <form action="/animes/search" method="get" class="form-element" id="search-bar-form" name="search-bar-form">
+        <select name="list" onload="searchBarDefaultSelection()" id="search-bar-list">
+          <option value="watching" class="search-bar-list-option">
+            watching
+          </option>
+          <option value="onhold" class="search-bar-list-option">
+            on hold
+          </option>
+          <option value="plantowatch" class="search-bar-list-option">
+            plan to watch
+          </option>
+          <option value="completed" class="search-bar-list-option">
+            completed
+          </option>
+          <option value="dropped" class="search-bar-list-option">
+            dropped
+          </option>
+        </select>
+        <label for="title">Search Anime</label>
+        <input type="search" name="title" value="" />
+        <input type="submit" name="search-submit" value="Search" />
+      </form>
+    </div>
+    <nav class="header-bar-left">
+      {% if g.user %}
+      <h5 class="header-left-element">{{ g.get("user")["user_name"] }}</h5>
+      <a href="/auth/logout">Logout</a>
+      {% else %}
+      <a href="/auth/login">Login</a> <a href="/auth/sign-up">Signe Up</a>
+      {% endif%}
+    </nav>
+  </header>
+  <script src="{{ url_for('static', filename='js/searchBar.js') }}"></script>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <ul class="flashed">
+    {% for c, m in messages %}
+    <li class="{{ c }}">{{ m }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+
+  {% block belowP %} {% endblock %}
+</body>
+
+</html>

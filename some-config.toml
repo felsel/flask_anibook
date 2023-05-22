@@ -1,0 +1,6 @@
+[OPTION]
+option1 = true
+option2 = 420
+
+[NO_OPTION]
+no-option1 = "not an option"

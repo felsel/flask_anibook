@@ -1,0 +1,47 @@
+# this project:
+**/.envs.toml
+**/some_config.toml
+**/.config
+**/.environments
+**/todo.md
+**/instance/**
+**/target/**
+
+# -- my default gitignore --
+# etc
+**/brainstorm.txt
+
+# ignore ALL .log files
+*.log
+
+# env
+**/conda-env/
+**/env/
+venv/
+**/*.env
+**/quizzik-env
+**/*.ini
+**/Config.toml
+
+# ignore ALL folder in ANY directory named temp
+**/temp/
+
+# binaries
+**/target/
+dist/
+build/
+*.egg-info/
+
+# flask related
+*.pyc
+__pycache__/
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ignore anything related to test
+test*
+**/coverage
+**/tests
+

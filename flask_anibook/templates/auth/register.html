@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block belowP %}
+Registering
+<form action="/auth/register" method="post">
+  <label for="username" class="formLabel">Username: </label>
+  <input type="text" name="username">
+  <label for="email" class="formLabel">Email: : </label>
+  <input type="text" name="email">
+  <label for="password" class="formLabel">password: </label>
+  <input type="password" name="password">
+  <label for="password-two" class="formLabel">Password: </label>
+  <input type="password" name="password-two">
+  <input type="submit" name="submit" value="Create" class="submitButton">
+</form>
+{% endblock %}

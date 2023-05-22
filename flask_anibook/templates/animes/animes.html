@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block belowP %}
+<div>
+  <section class="search-result">
+    {% for e in result%}
+    <p>{{ e[1] }}</p>
+    {% endfor%}
+  </section>
+</div>
+{% endblock %}

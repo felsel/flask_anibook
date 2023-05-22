@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block belowP%}
+<div class="">
+  {% if request.args %}
+    <section class="search-result">
+      {% for e in result%}
+        <article class="anime-article">
+          <p>{{ e[1] }}</p>
+          <form action="/animes/edit" method="post" class="form-element">
+            <input type="hidden" name="_method" value="put">
+            <input type="hidden" name="list" value={{request.args.get('list')}}>
+            <input type="hidden" name="title" value={{ e[1] }}>
+            <input type="text" name="edit-value">
+            <input type="submit" name="edit-title" value="edit">
+          </form>
+        </article>
+      {% endfor%}
+    </section>
+  {% else %}
+    <section class="list-of-animes">
+      {% for e in animes %}
+        <p>{{ e[1] }}</p>
+      {% endfor %}
+    </section>
+  {% endif %}
+</div>
+{% endblock %}
