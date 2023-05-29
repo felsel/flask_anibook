@@ -1,11 +1,21 @@
 <!-- show a form with email imput field and radio input to chose if password or username is forgotten. -->
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-  <title></title>
-</head>
+{% block belowP %}
+<form action="/auth/reset" method="POST" enctype="application/x-www-form-urlencoded">
+  <p>Anibook, Account Recovery Support </p>
+  <label for="email">Enter affected email:</label>
+  <input type="email" name="email">
 
-<body></body>
+  <select name="reset" id="ItemToReset">
+    {% set x = ["username", "password"] %}
+    {% for e in x %}
+    <option value="{{e}}" class="search-bar-list-option">Forgot {{e}}.</option>
+    {% endfor %}
+    <!-- <option value="username" class="search-bar-list-option">Forgot username.</option> -->
+    <!-- <option value="password" class="search-bar-list-option">Forgot Password.</option> -->
+  </select>
 
-</html>
+  <input type="submit">
+</form>
+{% endblock%}

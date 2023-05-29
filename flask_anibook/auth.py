@@ -134,28 +134,28 @@ def verify_reset_token(token, expire_sec=900):
 
 @auth_bp.route("/reset", methods=["GET", "POST"])
 def reset():
-    reset_email = request.form.get("email")
-    reset_username = request.form.get("username")
-    reset_password = request.form.get("password")
+    reset_email = str(request.form.get("email"))
+    item_to_reset = str(request.form.get("reset"))
     error = ""
     category = ""
     if request.method == "POST":
-        with sqlalchemy_db.engine() as conn:
+        with sqlalchemy_db.engine.connect() as conn:
             query = text("select * from anibook_users where email = :y")
             result = conn.execute(query, {"y": reset_email})
             user = result.mappings().first()
             if not user:
+                return f"{reset_email}"
                 error = "We did not find any data related to the email provided."
                 category = "warning"
-            elif not reset_password and not reset_username:
-                error = "Must select which information you forgot."
-                category = "warning"
-            elif reset_username:
-                send_reset_username(user)
-            else:
-                token = get_reset_token(user)
+            elif item_to_reset == "password":
+                token = get_reset_token(user.get("user_name"))
                 send_reset_password(user, token)
                 return render_template("auth/checkEmail.html")
+            elif item_to_reset == "username":
+                send_reset_username(user)
+            else:
+                error = "Must select which information you forgot."
+                category = "warning"
     flash(error, category)
     return render_template("auth/reset.html")
 
