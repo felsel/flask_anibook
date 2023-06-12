@@ -1,11 +1,5 @@
 <!-- show a message telling user to check email for further step in order to reset password -->
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title></title>
-</head>
-
-<body></body>
-
-</html>
+{% extends "base.html" %}
+{% block belowP%}
+<p id=checkMailPage>An email has been sent to the provided address. Verify your email for further steps.</p>
+{% endblock %}

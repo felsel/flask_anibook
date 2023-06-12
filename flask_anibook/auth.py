@@ -117,13 +117,15 @@ def register():
 
 def get_reset_token(user_id):
     s = serializer(str(current_app.config["SECRET_KEY"]))
-    token = s.dumps({"user_id": user_id})
+    token = s.dumps({"user_id": str(user_id)})
     return token
 
 
 def verify_reset_token(token, expire_sec=900):
-    s = serializer(str(current_app.config["SECRET_KEY"], expire_sec))
+    s = serializer(str(current_app.config["SECRET_KEY"]))
     try:
+        # our serializer inherited from TimedSerializer,
+        # which has a loads method that has a max_age property
         user_id = s.loads(token, max_age=expire_sec)["user_id"]
     except BadSignature:
         return ""
@@ -148,11 +150,12 @@ def reset():
                 error = "We did not find any data related to the email provided."
                 category = "warning"
             elif item_to_reset == "password":
-                token = get_reset_token(user.get("user_name"))
+                token = get_reset_token(user.get("user_id"))
                 send_reset_password(user, token)
                 return render_template("auth/checkEmail.html")
             elif item_to_reset == "username":
                 send_reset_username(user)
+                return render_template("auth/checkEmail.html")
             else:
                 error = "Must select which information you forgot."
                 category = "warning"
@@ -160,12 +163,15 @@ def reset():
     return render_template("auth/reset.html")
 
 
-@auth_bp.route("/reset/<string:token>", methods=["GET", "POST"])
-def verified_reset(token):
+@auth_bp.route("/reset-token", methods=["GET", "POST"])
+def verified_reset():
     error = ""
     category = ""
     password = request.form.get("password")
-    password_two = request.form.get("passwordTwo")
+    password_two = request.form.get("password_two")
+    token = request.args.get("token")
+    if not token:
+        token = request.form.get("token")
     user_id = verify_reset_token(token)
 
     if request.method == "POST":
@@ -175,28 +181,31 @@ def verified_reset(token):
         else:
             password_hash = hashpw(bytes(password, "utf-8"), gensalt())
             try:
-                with sqlalchemy_db.engine() as conn:
+                with sqlalchemy_db.engine.connect() as conn:
                     query = text(
-                        "update table anibook_users set password_hash = :y where user_id = :z"
+                        "update anibook_users set password_hash = :y where user_id = :z"
                     )
                     result = conn.execute(
                         query, {"y": password_hash, "z": user_id})
                     conn.commit()
+                return redirect(url_for("auth.login"))
             except:
                 error = "Error510. Something went wrong please contact support."
                 category = "failure"
+                raise
         flash(error, category)
-        return redirect(url_for("auth.login"))
+        return render_template("auth/resetPassword.html", token=token)
 
     if not user_id:
         error = "Invalid reset token or Token has expired. Try reseting again."
+        category = "failure"
         return redirect(url_for("auth.reset"))
     else:
-        with sqlalchemy_db.engine() as conn:
+        with sqlalchemy_db.engine.connect() as conn:
             query = text(
                 "select user_id from anibook_users where user_id = :y")
             result = conn.execute(query, {"y": user_id})
-            if result.mappings().first()["user_name"]:
-                return render_template("auth/resetPassword.html")
+            if result.mappings().first()["user_id"]:
+                return render_template("auth/resetPassword.html", token=token)
     # may add a custom error page
     return "Something went wrong whith resetting your password. Go back to home."
